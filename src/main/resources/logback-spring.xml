@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Define o appender JSON estruturado -->
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Inclui campos fixos como nome do serviço -->
+            <customFields>{"service":"hexagonal-template-api"}</customFields>
+        </encoder>
+    </appender>
+
+    <!-- Silencia exceções esperadas do Spring -->
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR"/>
+    <logger name="org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter" level="ERROR"/>
+
+    <!-- Define nível padrão e appender -->
+    <root level="INFO">
+        <appender-ref ref="JSON"/>
+    </root>
+
+</configuration>
+
+        <!--<configuration>-->
+        <!--    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">-->
+        <!--        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">-->
+        <!--            <providers>-->
+        <!--                <timestamp>-->
+        <!--                    <timeZone>America/Sao_Paulo</timeZone>-->
+        <!--                </timestamp>-->
+        <!--                <pattern>-->
+        <!--                    <pattern>-->
+        <!--                        {-->
+        <!--                        "level": "%level",-->
+        <!--                        "logger": "%logger",-->
+        <!--                        "thread": "%thread",-->
+        <!--                        "traceId": "%X{traceId:-UNKNOWN}",-->
+        <!--                        "message": "%message",-->
+        <!--                        "class": "%class",-->
+        <!--                        "method": "%method",-->
+        <!--                        "line": "%line",-->
+        <!--                        "exception": "%exception"-->
+        <!--                        }-->
+        <!--                    </pattern>-->
+        <!--                </pattern>-->
+        <!--            </providers>-->
+        <!--        </encoder>-->
+        <!--    </appender>-->
+
+        <!--    <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR" />-->
+
+        <!--    <root level="INFO">-->
+        <!--        <appender-ref ref="JSON"/>-->
+        <!--    </root>-->
+        <!--</configuration>-->
