@@ -44,6 +44,8 @@ public class TraceFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } finally {
             MDC.remove(MDC_TRACE_ID);
+            MDC.remove(MDC_HTTP_METHOD);
+            MDC.remove(MDC_REQUEST_URI);
         }
     }
 }

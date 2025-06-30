@@ -2,11 +2,10 @@ package com.example.hexagonal_template.adapter.in.api.rest.handler;
 
 import com.example.hexagonal_template.adapter.in.api.rest.dto.ApiErrorResponse;
 import com.example.hexagonal_template.adapter.in.api.rest.dto.ValidationErrorResponse;
-import com.example.hexagonal_template.adapter.in.api.rest.util.StackTraceUtils;
-import com.example.hexagonal_template.adapter.in.api.rest.util.StructuredLogger;
 import com.example.hexagonal_template.adapter.in.api.rest.util.TraceUtils;
 import com.example.hexagonal_template.application.exception.BusinessException;
 import com.example.hexagonal_template.domain.exception.DomainException;
+import com.example.hexagonal_template.port.out.logging.LogPort;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +28,12 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    private final LogPort logPort;
+
+    public GlobalExceptionHandler(LogPort logPort) {
+        this.logPort = logPort;
+    }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiErrorResponse> handleBusiness(BusinessException ex, HttpServletRequest request) {
@@ -82,13 +87,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             Exception ex
     ) {
         String traceId = TraceUtils.getTraceId(request);
-        String teste = StackTraceUtils.getOriginClass(ex);
-        String teste1 = StackTraceUtils.getOriginMethod(ex);
 
-        System.out.println(teste);
-        System.out.println(teste1);
-
-        StructuredLogger.logBusinessWarn(log, code, message, traceId, ex);
+        logPort.error(message, code, traceId, ex);
 
         ApiErrorResponse error = new ApiErrorResponse(
                 code,
@@ -102,13 +102,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return ResponseEntity.status(status).body(error);
-    }
-
-    private void logError(Exception ex, String traceId){
-        String originClass = StackTraceUtils.getOriginClass(ex);
-        String originMethod = StackTraceUtils.getOriginMethod(ex);
-
-        System.out.println(originClass);
-        System.out.println(originMethod);
     }
 }
